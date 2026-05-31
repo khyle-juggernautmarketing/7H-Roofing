@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { LocalBusinessJsonLd } from '@/components/LocalBusinessJsonLd'
+import { SITE_URL } from '@/utils/siteData'
 import './globals.css'
 
 export const viewport: Viewport = {
@@ -22,7 +23,7 @@ const description =
   'Licensed TN & AL roofing contractor. Free roof assessments, storm damage repair, 24/7 emergency tarping. Serving Lawrenceburg, Pulaski, Huntsville, Franklin & Spring Hill since 2006.'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://7hroofing.com'),
+  metadataBase: new URL(SITE_URL),
   title,
   description,
   keywords: [
@@ -36,14 +37,14 @@ export const metadata: Metadata = {
     'emergency roof tarping',
     'free roof inspection',
   ],
-  alternates: { canonical: 'https://7hroofing.com' },
+  alternates: { canonical: SITE_URL },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   openGraph: {
     title,
     description,
     type: 'website',
     locale: 'en_US',
-    url: 'https://7hroofing.com',
+    url: SITE_URL,
     siteName: '7H Roofing and Construction',
     images: [{ url: '/hero-bg.webp', width: 1200, height: 630, alt: '7H Roofing professional residential roof installation' }],
   },

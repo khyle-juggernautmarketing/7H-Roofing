@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 
 export const BRAND_NAME = '7H Roofing and Construction'
+export const SITE_URL = 'https://7hroofing.toprooferusa.com'
 
 export const ACCENT = '#E64646'
 export const ACCENT_DARK = '#c93a3a'

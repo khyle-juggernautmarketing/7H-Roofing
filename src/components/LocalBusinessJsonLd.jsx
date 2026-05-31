@@ -1,13 +1,13 @@
-import { CONTACT_INFO, LOCATIONS, SERVICES } from '@/utils/siteData'
+import { CONTACT_INFO, LOCATIONS, SERVICES, SITE_URL } from '@/utils/siteData'
 
 export function LocalBusinessJsonLd() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'RoofingContractor',
     name: '7H Roofing and Construction',
-    url: 'https://7hroofing.com',
-    logo: 'https://7hroofing.com/Logo.png',
-    image: 'https://7hroofing.com/hero-bg.webp',
+    url: SITE_URL,
+    logo: `${SITE_URL}/Logo.png`,
+    image: `${SITE_URL}/hero-bg.webp`,
     telephone: CONTACT_INFO.primaryPhone,
     email: CONTACT_INFO.email,
     foundingDate: '2006',
