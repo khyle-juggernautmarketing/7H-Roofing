@@ -1,8 +1,8 @@
 'use client'
 
 import { ArrowRight } from 'lucide-react'
-import Image from 'next/image'
 import { CONTACT_INFO, SERVICES } from '@/utils/siteData'
+import { LandscapeImage } from '@/components/LandscapeImage'
 import { Button } from '@/components/ui/Button'
 
 export function Services() {
@@ -39,8 +39,13 @@ export function Services() {
                     </Button>
                   </div>
                 </div>
-                <div className={`relative min-h-[220px] sm:min-h-[280px] ${row.reverse ? 'md:order-1' : ''}`}>
-                  <Image src={row.image} alt={row.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+                <div className={row.reverse ? 'md:order-1' : ''}>
+                  <LandscapeImage
+                    src={row.image}
+                    alt={row.alt}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    aspectClass="aspect-[16/10] sm:aspect-[16/9] md:aspect-[5/4]"
+                  />
                 </div>
               </div>
             </article>

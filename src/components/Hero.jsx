@@ -1,24 +1,23 @@
 'use client'
 
 import { CheckCircle2, Star } from 'lucide-react'
-import Image from 'next/image'
 import { CONTACT_INFO, HERO_IMAGE, VALUE_PROPS } from '@/utils/siteData'
+import { LandscapeImage } from '@/components/LandscapeImage'
 import { LeadForm } from '@/components/LeadForm'
 
 export function Hero() {
   return (
     <section className="bg-white">
-      {/* Banner image strip */}
-      <div className="relative h-48 w-full sm:h-64 md:h-72">
-        <Image
+      {/* Banner image — wide landscape */}
+      <div className="relative w-full">
+        <LandscapeImage
           src={HERO_IMAGE}
           alt="Aerial view of a home with professional roofing by 7H Roofing and Construction"
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
           priority
+          sizes="100vw"
+          aspectClass="aspect-[16/9] sm:aspect-[21/9] md:aspect-[2.4/1]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-white" aria-hidden />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-white" aria-hidden />
       </div>
 
       {/* Floating card layout */}

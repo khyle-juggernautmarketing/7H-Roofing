@@ -9,6 +9,7 @@ import {
   FORM_SERVICE_OPTIONS,
   FORM_TIMELINE_OPTIONS,
 } from '@/utils/siteData'
+import { AppointmentCalendar } from '@/components/AppointmentCalendar'
 import { initialLeadForm } from '@/types/lead'
 import { maskForLog, sanitizeInput } from '@/utils/validation'
 
@@ -100,6 +101,7 @@ export function LeadForm() {
   const [status, setStatus] = useState('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [honeypot, setHoneypot] = useState('')
+  const [bookingLead, setBookingLead] = useState(null)
 
   const selectService = useCallback((service) => {
     setData((d) => ({ ...d, service }))
@@ -183,9 +185,16 @@ export function LeadForm() {
         setErrorMsg(typeof j.error === 'string' ? j.error : 'Submission failed. Please call us directly.')
         return
       }
-      setData(initialLeadForm)
-      setStep(1)
-      setStatus('success')
+      setBookingLead({
+        leadId: typeof j.leadId === 'string' ? j.leadId : crypto.randomUUID(),
+        firstName,
+        lastName,
+        email,
+        phone,
+        address,
+        service: data.service,
+      })
+      setStatus('booking')
     } catch {
       setStatus('idle')
       setErrorMsg('Network error. Check your connection or call us directly.')
@@ -194,25 +203,14 @@ export function LeadForm() {
 
   const motionDur = prefersReducedMotion ? 0 : 0.35
 
-  if (status === 'success') {
+  if (status === 'booking' && bookingLead) {
     return (
-      <div className="animate-form-success flex min-h-[360px] flex-col items-center justify-center px-2 text-center">
-        <SuccessMarks />
-        <h3 className="mt-6 text-xl font-bold text-neutral-900">Request Received!</h3>
-        <p className="mt-2 max-w-sm text-neutral-600">
-          We&apos;ll reach out shortly. For urgent storm damage, call{' '}
-          <a href={CONTACT_INFO.primaryPhoneHref} className="font-semibold text-[#E64646] hover:underline">
-            {CONTACT_INFO.primaryPhone}
-          </a>
-          .
-        </p>
-        <button
-          type="button"
-          onClick={() => setStatus('idle')}
-          className="mt-8 min-h-12 rounded-lg border-2 border-[#E64646] px-6 text-sm font-semibold text-neutral-800 transition-all hover:bg-[#E64646]/5"
-        >
-          Submit another request
-        </button>
+      <div className="animate-form-success">
+        <div className="mb-4 rounded-lg border border-[#E64646]/20 bg-[#E64646]/5 px-4 py-3 text-center">
+          <p className="text-sm font-semibold text-neutral-900">Request received!</p>
+          <p className="mt-1 text-xs text-neutral-600">Pick a date and time below to complete your booking.</p>
+        </div>
+        <AppointmentCalendar lead={bookingLead} />
       </div>
     )
   }

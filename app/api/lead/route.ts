@@ -122,7 +122,8 @@ export async function POST(request: Request) {
       )
     }
 
-    return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } })
+    const leadId = crypto.randomUUID()
+    return NextResponse.json({ ok: true, leadId }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (err) {
     console.error('Lead API: unexpected error')
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
