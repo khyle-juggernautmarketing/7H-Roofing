@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { LocalBusinessJsonLd } from '@/components/LocalBusinessJsonLd'
+import { MetaPixel } from '@/components/MetaPixel'
 import { SITE_URL } from '@/utils/siteData'
 import './globals.css'
 
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen overflow-x-hidden bg-white font-sans text-neutral-900 antialiased">
+        <MetaPixel />
         <LocalBusinessJsonLd />
         {children}
       </body>

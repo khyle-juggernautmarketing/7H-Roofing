@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { CheckCircle2, Phone } from 'lucide-react'
-import { MetaPixel } from '@/components/MetaPixel'
 import { BRAND_NAME, CONTACT_INFO, LOGO_IMAGE } from '@/utils/siteData'
 
 type Props = { searchParams: Promise<{ date?: string; time?: string; name?: string }> }
@@ -19,7 +18,6 @@ export default async function ThankYouPage({ searchParams }: Props) {
 
   return (
     <main className="min-h-screen bg-neutral-50">
-      <MetaPixel event="Schedule" />
       <header className="border-b border-neutral-200 bg-white">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
           <Link href="/" className="flex items-center gap-3">
