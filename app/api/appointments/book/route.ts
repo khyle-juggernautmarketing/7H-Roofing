@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server'
 import { isValidBookableStart } from '@/lib/booking/slots'
 import { addAppointmentIfAvailable, loadAppointments } from '@/lib/booking/store'
 import { formatCstDisplay, formatCstTime } from '@/lib/booking/cst'
-import { isValidJwtSecret, isValidWebhookUrl, signJwtHS256 } from '@/lib/jwt'
+import { markLeadBooked } from '@/lib/booking/pendingLeads'
 import { buildLeadWebhookPayload } from '@/lib/leadWebhook'
+import { sendWebhook } from '@/lib/webhook/sendWebhook'
 import type { PropertyAge, Service, Timeline } from '@/types/lead'
 import { PROPERTY_AGES, SERVICES, TIMELINES } from '@/types/lead'
 
@@ -84,42 +85,38 @@ export async function POST(request: Request) {
 
   const appointmentLabel = `${formatCstDisplay(start)} at ${formatCstTime(start)} CST`
 
-  const webhookUrl = process.env.N8N_WEBHOOK_URL?.trim()
-  const jwtSecret = process.env.N8N_JWT_SECRET?.trim()
-  if (webhookUrl && jwtSecret && isValidWebhookUrl(webhookUrl) && isValidJwtSecret(jwtSecret)) {
-    try {
-      const token = signJwtHS256(jwtSecret, { sub: 'appointment-booking', appointmentId: record.id })
-      const { type: _omit, ...leadFields } = buildLeadWebhookPayload(
-        {
-          service: service as Service,
-          propertyAge: propertyAge as PropertyAge,
-          timeline: timeline as Timeline,
-          firstName,
-          lastName,
-          email,
-          phone,
-          address,
-          consent,
-        },
-        { leadId, source: '7h-roofing-landing' },
-      )
-      await fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          type: 'appointment',
-          appointmentId: record.id,
-          startUtc,
-          appointmentLabel,
-          ...leadFields,
-        }),
-      })
-    } catch (err) {
-      console.error('Appointment webhook failed', err)
-    }
+  await markLeadBooked(leadId)
+
+  const { type: _omit, ...leadFields } = buildLeadWebhookPayload(
+    {
+      service: service as Service,
+      propertyAge: propertyAge as PropertyAge,
+      timeline: timeline as Timeline,
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      consent,
+    },
+    { leadId, source: '7h-roofing-landing' },
+  )
+
+  const webhookResult = await sendWebhook(
+    {
+      type: 'appointment',
+      appointmentId: record.id,
+      startUtc,
+      appointmentLabel,
+      calendarCompleted: true,
+      bookingStatus: 'appointment_booked',
+      ...leadFields,
+    },
+    'appointment-booking',
+  )
+
+  if (!webhookResult.ok) {
+    console.error('Appointment webhook failed:', webhookResult.error)
   }
 
   return NextResponse.json({

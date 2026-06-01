@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server'
+import { processDuePendingLeads } from '@/lib/booking/pendingLeads'
 import { getBookableDateKeys, generateSlotsForDate } from '@/lib/booking/slots'
 import { loadAppointments } from '@/lib/booking/store'
 import { cstToUtc, formatCstDisplay } from '@/lib/booking/cst'
 
 export async function GET(request: Request) {
+  await processDuePendingLeads().catch(() => {})
+
   const { searchParams } = new URL(request.url)
   const dateKey = searchParams.get('date')
 

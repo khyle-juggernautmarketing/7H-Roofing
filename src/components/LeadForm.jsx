@@ -2,12 +2,13 @@
 
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { CheckCircle2, Loader2 } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   CONTACT_INFO,
   FORM_PROPERTY_AGE_OPTIONS,
   FORM_SERVICE_OPTIONS,
   FORM_TIMELINE_OPTIONS,
+  LEAD_WEBHOOK_FALLBACK_MS,
 } from '@/utils/siteData'
 import { AppointmentCalendar } from '@/components/AppointmentCalendar'
 import { initialLeadForm } from '@/types/lead'
@@ -102,6 +103,22 @@ export function LeadForm() {
   const [errorMsg, setErrorMsg] = useState('')
   const [honeypot, setHoneypot] = useState('')
   const [bookingLead, setBookingLead] = useState(null)
+
+  useEffect(() => {
+    const leadId = bookingLead?.leadId
+    if (!leadId) return
+
+    const timer = window.setTimeout(() => {
+      fetch('/api/lead/send-fallback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId }),
+        keepalive: true,
+      }).catch(() => {})
+    }, LEAD_WEBHOOK_FALLBACK_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [bookingLead?.leadId])
 
   const selectService = useCallback((service) => {
     setData((d) => ({ ...d, service }))
