@@ -24,8 +24,6 @@ export const GOOGLE_BUSINESS = {
   locationLabel: 'Lawrenceburg, TN',
 }
 
-export const SHANE_IMAGE = '/shane.jpg'
-
 export const ACCENT = '#E64646'
 export const ACCENT_DARK = '#c93a3a'
 export const ACCENT_LIGHT = 'rgba(230, 70, 70, 0.12)'
@@ -202,4 +200,3 @@ export const INSURANCE_STEPS = [
 
 export const HERO_IMAGE = '/hero-bg.webp'
 export const LOGO_IMAGE = '/Logo.png'
-export const SHANE_IMAGE_ALT = 'Shane, owner of 7H Roofing and Construction'

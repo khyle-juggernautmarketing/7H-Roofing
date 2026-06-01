@@ -1,14 +1,7 @@
 'use client'
 
 import { CheckCircle2 } from 'lucide-react'
-import Image from 'next/image'
-import {
-  CONTACT_INFO,
-  HERO_IMAGE,
-  SHANE_IMAGE,
-  SHANE_IMAGE_ALT,
-  VALUE_PROPS,
-} from '@/utils/siteData'
+import { CONTACT_INFO, HERO_IMAGE, VALUE_PROPS } from '@/utils/siteData'
 import { GoogleReviewsBadge } from '@/components/GoogleReviewsBadge'
 import { LandscapeImage } from '@/components/LandscapeImage'
 import { LeadForm } from '@/components/LeadForm'
@@ -16,7 +9,6 @@ import { LeadForm } from '@/components/LeadForm'
 export function Hero() {
   return (
     <section className="bg-gradient-to-b from-neutral-50 to-white">
-      {/* Banner with Shane portrait */}
       <div className="relative w-full">
         <LandscapeImage
           src={HERO_IMAGE}
@@ -26,27 +18,6 @@ export function Hero() {
           aspectClass="aspect-[16/9] sm:aspect-[21/9] md:aspect-[2.35/1]"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/15 to-black/25" aria-hidden />
-
-        {/* Shane — corner portrait */}
-        <div className="absolute bottom-3 right-3 z-10 sm:bottom-5 sm:right-6 md:bottom-6 md:right-10">
-          <div className="relative overflow-hidden rounded-2xl border-[3px] border-white/95 bg-white shadow-2xl ring-2 ring-[#E64646]/40">
-            <div className="relative h-[88px] w-[72px] sm:h-[112px] sm:w-[92px] md:h-[128px] md:w-[104px]">
-              <Image
-                src={SHANE_IMAGE}
-                alt={SHANE_IMAGE_ALT}
-                fill
-                sizes="104px"
-                className="object-cover object-[center_15%]"
-                priority
-              />
-            </div>
-            <div className="bg-[#E64646] px-2 py-1 text-center">
-              <p className="text-[0.6rem] font-bold uppercase tracking-wide text-white sm:text-[0.65rem]">
-                Meet Shane
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Floating card */}
