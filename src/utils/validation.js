@@ -9,6 +9,19 @@ export function sanitizeInput(value, maxLen = 500) {
     .slice(0, maxLen)
 }
 
+/** Preserve spaces while typing (only strips control chars / HTML). */
+export function sanitizeAddressInput(value, maxLen = 200) {
+  return String(value ?? '')
+    .replace(CONTROL_CHARS, '')
+    .replace(HTML_TAG, '')
+    .slice(0, maxLen)
+}
+
+/** Normalize address on submit — trims leading/trailing space only. */
+export function normalizeAddress(value, maxLen = 200) {
+  return sanitizeAddressInput(value, maxLen).trim()
+}
+
 export function maskEmail(email) {
   const [local, domain] = email.split('@')
   if (!local || !domain) return '***@***'

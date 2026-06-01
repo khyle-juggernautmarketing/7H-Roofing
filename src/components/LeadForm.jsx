@@ -11,7 +11,7 @@ import {
 } from '@/utils/siteData'
 import { AppointmentCalendar } from '@/components/AppointmentCalendar'
 import { initialLeadForm } from '@/types/lead'
-import { maskForLog, sanitizeInput } from '@/utils/validation'
+import { maskForLog, normalizeAddress, sanitizeAddressInput, sanitizeInput } from '@/utils/validation'
 
 const STEPS = [
   { id: 1, title: 'What service do you need?' },
@@ -129,7 +129,7 @@ export function LeadForm() {
     const lastName = sanitizeInput(data.lastName, 60)
     const email = sanitizeInput(data.email, 254)
     const phone = sanitizeInput(data.phone, 32)
-    const address = sanitizeInput(data.address, 200)
+    const address = normalizeAddress(data.address, 200)
 
     if (!data.service || !data.propertyAge || !data.timeline) {
       setErrorMsg('Please complete all steps before submitting.')
@@ -292,8 +292,8 @@ export function LeadForm() {
                   required
                   autoComplete="street-address"
                   value={data.address}
-                  onChange={(e) => setData({ ...data, address: sanitizeInput(e.target.value, 200) })}
-                  placeholder="Street address, city, state"
+                  onChange={(e) => setData({ ...data, address: sanitizeAddressInput(e.target.value, 200) })}
+                  placeholder="123 Main St, Franklin, TN 37064"
                   className={inputClass}
                 />
               </label>

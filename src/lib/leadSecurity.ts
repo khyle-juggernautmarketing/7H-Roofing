@@ -45,7 +45,7 @@ export function validateLeadBody(body: unknown):
   const lastName = sanitizeText(raw.lastName, MAX.lastName)
   const email = sanitizeText(raw.email, MAX.email).toLowerCase()
   const phone = sanitizeText(raw.phone, MAX.phone)
-  const address = sanitizeText(raw.address, MAX.address)
+  const address = sanitizeText(raw.address, MAX.address).replace(/\s+/g, ' ')
   const consent = raw.consent === true
 
   if (!service || !propertyAge || !timeline || !firstName || !lastName || !email || !phone || !address) {

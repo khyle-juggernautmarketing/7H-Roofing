@@ -1,4 +1,4 @@
-import { CONTACT_INFO, LOCATIONS, SERVICES, SITE_URL } from '@/utils/siteData'
+import { CONTACT_INFO, GOOGLE_BUSINESS, LOCATIONS, SERVICES, SITE_URL } from '@/utils/siteData'
 
 export function LocalBusinessJsonLd() {
   const schema = {
@@ -29,6 +29,13 @@ export function LocalBusinessJsonLd() {
         itemOffered: { '@type': 'Service', name: s.title, description: s.description },
       })),
     },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: GOOGLE_BUSINESS.rating,
+      reviewCount: GOOGLE_BUSINESS.reviewCount,
+      bestRating: 5,
+    },
+    sameAs: [GOOGLE_BUSINESS.url],
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],

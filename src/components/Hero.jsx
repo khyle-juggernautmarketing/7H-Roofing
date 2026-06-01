@@ -1,39 +1,67 @@
 'use client'
 
-import { CheckCircle2, Star } from 'lucide-react'
-import { CONTACT_INFO, HERO_IMAGE, VALUE_PROPS } from '@/utils/siteData'
+import { CheckCircle2 } from 'lucide-react'
+import Image from 'next/image'
+import {
+  CONTACT_INFO,
+  HERO_IMAGE,
+  SHANE_IMAGE,
+  SHANE_IMAGE_ALT,
+  VALUE_PROPS,
+} from '@/utils/siteData'
+import { GoogleReviewsBadge } from '@/components/GoogleReviewsBadge'
 import { LandscapeImage } from '@/components/LandscapeImage'
 import { LeadForm } from '@/components/LeadForm'
 
 export function Hero() {
   return (
-    <section className="bg-white">
-      {/* Banner image — wide landscape */}
+    <section className="bg-gradient-to-b from-neutral-50 to-white">
+      {/* Banner with Shane portrait */}
       <div className="relative w-full">
         <LandscapeImage
           src={HERO_IMAGE}
-          alt="Aerial view of a home with professional roofing by 7H Roofing and Construction"
+          alt="Professional roofing project completed by 7H Roofing and Construction"
           priority
           sizes="100vw"
-          aspectClass="aspect-[16/9] sm:aspect-[21/9] md:aspect-[2.4/1]"
+          aspectClass="aspect-[16/9] sm:aspect-[21/9] md:aspect-[2.35/1]"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-white" aria-hidden />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/15 to-black/25" aria-hidden />
+
+        {/* Shane — corner portrait */}
+        <div className="absolute bottom-3 right-3 z-10 sm:bottom-5 sm:right-6 md:bottom-6 md:right-10">
+          <div className="relative overflow-hidden rounded-2xl border-[3px] border-white/95 bg-white shadow-2xl ring-2 ring-[#E64646]/40">
+            <div className="relative h-[88px] w-[72px] sm:h-[112px] sm:w-[92px] md:h-[128px] md:w-[104px]">
+              <Image
+                src={SHANE_IMAGE}
+                alt={SHANE_IMAGE_ALT}
+                fill
+                sizes="104px"
+                className="object-cover object-[center_15%]"
+                priority
+              />
+            </div>
+            <div className="bg-[#E64646] px-2 py-1 text-center">
+              <p className="text-[0.6rem] font-bold uppercase tracking-wide text-white sm:text-[0.65rem]">
+                Meet Shane
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Floating card layout */}
-      <div className="relative z-10 mx-auto max-w-7xl px-3 pb-12 pt-0 sm:px-4 sm:pb-20">
-        <div className="-mt-12 overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-card-lg sm:-mt-20 sm:rounded-2xl md:-mt-24">
+      {/* Floating card */}
+      <div className="relative z-10 mx-auto max-w-7xl px-3 pb-14 pt-0 sm:px-4 sm:pb-20">
+        <div className="-mt-10 overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] sm:-mt-16 md:-mt-20">
           <div className="grid min-w-0 grid-cols-1 lg:grid-cols-12">
-            {/* Left content column */}
-            <div className="border-b border-neutral-100 p-5 sm:p-8 lg:col-span-7 lg:border-b-0 lg:border-r lg:p-10">
-              <p className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-[#E64646]/30 bg-[#E64646]/5 px-3 py-1.5 text-[0.65rem] font-semibold uppercase leading-snug tracking-wide text-[#E64646] sm:px-4 sm:text-xs">
-                <span className="h-2 w-2 rounded-full bg-[#E64646]" aria-hidden />
+            <div className="border-b border-neutral-100 p-5 sm:p-8 lg:col-span-7 lg:border-b-0 lg:border-r lg:p-10 xl:p-12">
+              <p className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-[#E64646]/25 bg-[#E64646]/5 px-3 py-1.5 text-[0.65rem] font-semibold uppercase leading-snug tracking-wide text-[#E64646] sm:px-4 sm:text-xs">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[#E64646]" aria-hidden />
                 Family-Owned Since 2006 — Franklin &amp; Spring Hill
               </p>
 
-              <h1 className="mt-4 text-balance text-[1.65rem] font-extrabold leading-tight tracking-tight text-neutral-900 sm:mt-5 sm:text-4xl lg:text-5xl">
+              <h1 className="mt-4 text-balance text-[1.75rem] font-extrabold leading-[1.15] tracking-tight text-neutral-900 sm:mt-5 sm:text-4xl lg:text-[2.65rem]">
                 Protect Your Home with Trusted{' '}
-                <span className="text-[#E64646]">Roofing &amp; Construction</span> Solutions
+                <span className="text-[#E64646]">Roofing &amp; Construction</span>
               </h1>
 
               <p className="mt-4 max-w-xl text-base leading-relaxed text-neutral-600 sm:text-lg">
@@ -41,7 +69,11 @@ export function Hero() {
                 emergency storm restorations, and premium craftsmanship designed to protect what matters most.
               </p>
 
-              <ul className="mt-6 space-y-2.5">
+              <div className="mt-6">
+                <GoogleReviewsBadge variant="compact" className="max-w-md" />
+              </div>
+
+              <ul className="mt-6 space-y-3">
                 {VALUE_PROPS.map((prop) => (
                   <li key={prop} className="flex items-start gap-3 text-neutral-800">
                     <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#E64646]" aria-hidden />
@@ -50,26 +82,18 @@ export function Hero() {
                 ))}
               </ul>
 
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                <div className="flex" aria-label="5 out of 5 stars">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-[#E64646] text-[#E64646]" aria-hidden />
-                  ))}
-                </div>
-                <span className="text-sm font-medium text-neutral-600">Trusted by homeowners across Middle TN</span>
-              </div>
-
               <a
                 href={CONTACT_INFO.primaryPhoneHref}
-                className="mt-6 inline-flex min-h-12 items-center justify-center rounded-lg bg-neutral-900 px-6 text-sm font-bold text-white transition-colors hover:bg-neutral-800"
+                className="mt-8 inline-flex min-h-12 items-center justify-center rounded-xl bg-neutral-900 px-7 text-sm font-bold text-white shadow-lg transition-all hover:bg-neutral-800 hover:shadow-xl"
               >
                 Call {CONTACT_INFO.primaryPhone}
               </a>
             </div>
 
-            {/* Right form column */}
-            <div id="contact" className="min-w-0 bg-neutral-50 p-4 sm:p-8 lg:col-span-5">
-              <LeadForm />
+            <div id="contact" className="min-w-0 bg-gradient-to-br from-neutral-50 to-neutral-100/80 p-4 sm:p-8 lg:col-span-5 lg:p-8">
+              <div className="rounded-xl border border-neutral-200/80 bg-white p-4 shadow-sm sm:p-6">
+                <LeadForm />
+              </div>
             </div>
           </div>
         </div>

@@ -15,6 +15,17 @@ import {
 export const BRAND_NAME = '7H Roofing and Construction'
 export const SITE_URL = 'https://7hroofing.toprooferusa.com'
 
+/** Google Business Profile — update reviewCount when your listing changes. */
+export const GOOGLE_BUSINESS = {
+  url: 'https://www.google.com/maps/place/7H+Roofing+and+Construction/@35.230307,-87.1687407,17z/data=!3m1!4b1!4m6!3m5!1s0x8863017d876482bb:0x5b360b7cf5336aa1!8m2!3d35.230307!4d-87.1687407!16s%2Fg%2F11fjtqnpjs?entry=ttu',
+  rating: 5.0,
+  reviewCount: 100,
+  reviewCountLabel: '100+',
+  locationLabel: 'Lawrenceburg, TN',
+}
+
+export const SHANE_IMAGE = '/shane.jpg'
+
 export const ACCENT = '#E64646'
 export const ACCENT_DARK = '#c93a3a'
 export const ACCENT_LIGHT = 'rgba(230, 70, 70, 0.12)'
@@ -191,3 +202,4 @@ export const INSURANCE_STEPS = [
 
 export const HERO_IMAGE = '/hero-bg.webp'
 export const LOGO_IMAGE = '/Logo.png'
+export const SHANE_IMAGE_ALT = 'Shane, owner of 7H Roofing and Construction'

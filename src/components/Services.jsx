@@ -10,7 +10,8 @@ export function Services() {
     <section id="services" className="bg-white py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#E64646]">Our Services</p>
+          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">
             Complete Exterior &amp; Roofing Solutions
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-lg text-neutral-600">
@@ -18,11 +19,11 @@ export function Services() {
           </p>
         </div>
 
-        <div className="mt-14 space-y-6">
+        <div className="mt-14 space-y-8">
           {SERVICES.map((row) => (
             <article
               key={row.id}
-              className="group overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-card transition-all hover:border-[#E64646]/30 hover:shadow-card-lg"
+              className="group overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-sm transition-all hover:border-[#E64646]/25 hover:shadow-lg"
             >
               <div className={`grid grid-cols-1 md:grid-cols-2 ${row.reverse ? 'md:[&>*:first-child]:order-2' : ''}`}>
                 <div className={`flex flex-col justify-center p-6 sm:p-8 ${row.reverse ? 'md:order-2' : ''}`}>
