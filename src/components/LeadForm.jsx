@@ -193,6 +193,9 @@ export function LeadForm() {
         phone,
         address,
         service: data.service,
+        propertyAge: data.propertyAge,
+        timeline: data.timeline,
+        consent: data.consent,
       })
       setStatus('booking')
     } catch {

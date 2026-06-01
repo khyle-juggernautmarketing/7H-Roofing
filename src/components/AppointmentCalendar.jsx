@@ -77,6 +77,9 @@ export function AppointmentCalendar({ lead }) {
           phone: lead.phone,
           address: lead.address,
           service: lead.service,
+          propertyAge: lead.propertyAge,
+          timeline: lead.timeline,
+          consent: lead.consent,
         }),
       })
       const j = await res.json()

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { isValidJwtSecret, isValidWebhookUrl, signJwtHS256 } from '@/lib/jwt'
 import { isRateLimited, rateLimitKey, validateLeadBody } from '@/lib/leadSecurity'
+import { buildLeadWebhookPayload } from '@/lib/leadWebhook'
 
 const WEBHOOK_TIMEOUT_MS = 25_000
 const MAX_BODY_BYTES = 8_192
@@ -68,22 +69,13 @@ export async function POST(request: Request) {
       consent,
     } = validated.data
 
-    const payload = {
-      service,
-      propertyAge,
-      timeline,
-      firstName,
-      lastName,
-      fullName: `${firstName} ${lastName}`.trim(),
-      email,
-      phone,
-      address,
-      consent,
-      source: '7h-roofing-landing',
-      submittedAt: new Date().toISOString(),
-    }
+    const leadId = crypto.randomUUID()
+    const payload = buildLeadWebhookPayload(
+      { service, propertyAge, timeline, firstName, lastName, email, phone, address, consent },
+      { leadId, source: '7h-roofing-landing' },
+    )
 
-    const token = signJwtHS256(config.jwtSecret, { sub: 'lead-form' })
+    const token = signJwtHS256(config.jwtSecret, { sub: 'lead-form', leadId })
 
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), WEBHOOK_TIMEOUT_MS)
@@ -122,7 +114,6 @@ export async function POST(request: Request) {
       )
     }
 
-    const leadId = crypto.randomUUID()
     return NextResponse.json({ ok: true, leadId }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (err) {
     console.error('Lead API: unexpected error')

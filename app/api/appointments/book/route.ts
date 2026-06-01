@@ -3,6 +3,9 @@ import { isValidBookableStart } from '@/lib/booking/slots'
 import { addAppointmentIfAvailable, loadAppointments } from '@/lib/booking/store'
 import { formatCstDisplay, formatCstTime } from '@/lib/booking/cst'
 import { isValidJwtSecret, isValidWebhookUrl, signJwtHS256 } from '@/lib/jwt'
+import { buildLeadWebhookPayload } from '@/lib/leadWebhook'
+import type { PropertyAge, Service, Timeline } from '@/types/lead'
+import { PROPERTY_AGES, SERVICES, TIMELINES } from '@/types/lead'
 
 type BookBody = {
   startUtc?: string
@@ -13,6 +16,13 @@ type BookBody = {
   phone?: string
   address?: string
   service?: string
+  propertyAge?: string
+  timeline?: string
+  consent?: boolean
+}
+
+function isAllowed(value: string, allowed: readonly string[]): boolean {
+  return allowed.includes(value)
 }
 
 function sanitize(s: unknown, max: number): string {
@@ -35,10 +45,17 @@ export async function POST(request: Request) {
   const phone = sanitize(body.phone, 32)
   const address = sanitize(body.address, 200)
   const service = sanitize(body.service, 64)
+  const propertyAge = sanitize(body.propertyAge, 64)
+  const timeline = sanitize(body.timeline, 64)
+  const consent = body.consent === true
   const leadId = sanitize(body.leadId, 64) || crypto.randomUUID()
 
   if (!startUtc || !firstName || !lastName || !email || !phone || !address) {
     return NextResponse.json({ error: 'Missing required booking fields.' }, { status: 400 })
+  }
+
+  if (!service || !propertyAge || !timeline || !isAllowed(service, SERVICES) || !isAllowed(propertyAge, PROPERTY_AGES) || !isAllowed(timeline, TIMELINES)) {
+    return NextResponse.json({ error: 'Missing or invalid lead form selections.' }, { status: 400 })
   }
 
   const appointments = await loadAppointments()
@@ -72,6 +89,20 @@ export async function POST(request: Request) {
   if (webhookUrl && jwtSecret && isValidWebhookUrl(webhookUrl) && isValidJwtSecret(jwtSecret)) {
     try {
       const token = signJwtHS256(jwtSecret, { sub: 'appointment-booking', appointmentId: record.id })
+      const { type: _omit, ...leadFields } = buildLeadWebhookPayload(
+        {
+          service: service as Service,
+          propertyAge: propertyAge as PropertyAge,
+          timeline: timeline as Timeline,
+          firstName,
+          lastName,
+          email,
+          phone,
+          address,
+          consent,
+        },
+        { leadId, source: '7h-roofing-landing' },
+      )
       await fetch(webhookUrl, {
         method: 'POST',
         headers: {
@@ -83,13 +114,7 @@ export async function POST(request: Request) {
           appointmentId: record.id,
           startUtc,
           appointmentLabel,
-          leadId,
-          firstName,
-          lastName,
-          email,
-          phone,
-          address,
-          service,
+          ...leadFields,
         }),
       })
     } catch (err) {
