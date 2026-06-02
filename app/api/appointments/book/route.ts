@@ -4,7 +4,9 @@ import { addAppointmentIfAvailable, loadAppointments } from '@/lib/booking/store
 import { formatCstDisplay, formatCstTime } from '@/lib/booking/cst'
 import { markLeadBooked } from '@/lib/booking/pendingLeads'
 import { buildLeadWebhookPayload } from '@/lib/leadWebhook'
+import { buildCapiUserDataFromLead, sendMetaConversionEvent } from '@/lib/metaCapi'
 import { sendWebhook } from '@/lib/webhook/sendWebhook'
+import { SITE_URL } from '@/utils/siteData'
 import type { PropertyAge, Service, Timeline } from '@/types/lead'
 import { PROPERTY_AGES, SERVICES, TIMELINES } from '@/types/lead'
 
@@ -20,6 +22,9 @@ type BookBody = {
   propertyAge?: string
   timeline?: string
   consent?: boolean
+  eventId?: string
+  fbp?: string
+  fbc?: string
 }
 
 function isAllowed(value: string, allowed: readonly string[]): boolean {
@@ -50,6 +55,10 @@ export async function POST(request: Request) {
   const timeline = sanitize(body.timeline, 64)
   const consent = body.consent === true
   const leadId = sanitize(body.leadId, 64) || crypto.randomUUID()
+  const eventId =
+    typeof body.eventId === 'string' && body.eventId.length <= 64 ? body.eventId.trim() : crypto.randomUUID()
+  const fbp = typeof body.fbp === 'string' ? body.fbp.slice(0, 256) : undefined
+  const fbc = typeof body.fbc === 'string' ? body.fbc.slice(0, 256) : undefined
 
   if (!startUtc || !firstName || !lastName || !email || !phone || !address) {
     return NextResponse.json({ error: 'Missing required booking fields.' }, { status: 400 })
@@ -119,11 +128,27 @@ export async function POST(request: Request) {
     console.error('Appointment webhook failed:', webhookResult.error)
   }
 
+  const capiResult = await sendMetaConversionEvent({
+    eventName: 'Schedule',
+    eventId,
+    eventSourceUrl: `${SITE_URL}/thank-you`,
+    userData: buildCapiUserDataFromLead({ email, phone, firstName, lastName }, request, { fbp, fbc }),
+    customData: {
+      lead_id: leadId,
+      service,
+      appointment_id: record.id,
+    },
+  })
+  if (!capiResult.ok) {
+    console.error('Meta CAPI Schedule failed:', capiResult.error)
+  }
+
   return NextResponse.json({
     ok: true,
     appointmentId: record.id,
     appointmentLabel,
     date: formatCstDisplay(start),
     time: formatCstTime(start),
+    metaEventId: eventId,
   })
 }

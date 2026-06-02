@@ -2,7 +2,9 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import type { LeadFormData } from '@/types/lead'
 import { buildLeadWebhookPayload } from '@/lib/leadWebhook'
+import { buildCapiUserDataFromLead, sendMetaConversionEvent } from '@/lib/metaCapi'
 import { sendWebhook } from '@/lib/webhook/sendWebhook'
+import { SITE_URL } from '@/utils/siteData'
 
 export const PENDING_LEAD_DELAY_MS = 10 * 60 * 1000
 
@@ -112,6 +114,22 @@ export async function trySendFallbackWebhook(leadId: string): Promise<'sent' | '
 
   const result = await sendWebhook(payload, 'lead-form-fallback')
   if (!result.ok) return 'failed'
+
+  const eventId = crypto.randomUUID()
+  const capiResult = await sendMetaConversionEvent({
+    eventName: 'Lead',
+    eventId,
+    eventSourceUrl: SITE_URL,
+    userData: buildCapiUserDataFromLead(lead.data),
+    customData: {
+      lead_id: leadId,
+      service: lead.data.service,
+      booking_status: 'form_only',
+    },
+  })
+  if (!capiResult.ok) {
+    console.error('Meta CAPI Lead failed:', capiResult.error)
+  }
 
   await markLeadSentFallback(leadId)
   return 'sent'

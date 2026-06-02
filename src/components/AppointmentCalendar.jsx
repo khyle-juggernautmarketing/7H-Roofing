@@ -3,6 +3,7 @@
 import { CalendarDays, Clock, Loader2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getMetaBrowserCookies } from '@/utils/metaCookies'
 
 export function AppointmentCalendar({ lead }) {
   const router = useRouter()
@@ -65,6 +66,8 @@ export function AppointmentCalendar({ lead }) {
     setBooking(true)
     setErrorMsg('')
     try {
+      const metaEventId = crypto.randomUUID()
+      const { fbp, fbc } = getMetaBrowserCookies()
       const res = await fetch('/api/appointments/book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,10 +83,14 @@ export function AppointmentCalendar({ lead }) {
           propertyAge: lead.propertyAge,
           timeline: lead.timeline,
           consent: lead.consent,
+          eventId: metaEventId,
+          fbp,
+          fbc,
         }),
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || 'Booking failed')
+      sessionStorage.setItem('meta_schedule_event_id', j.metaEventId ?? metaEventId)
       const params = new URLSearchParams({
         date: j.date ?? '',
         time: j.time ?? '',

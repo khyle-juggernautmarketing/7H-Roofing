@@ -19,7 +19,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://www.facebook.com",
       "font-src 'self' data:",
-      "connect-src 'self' https://www.facebook.com https://connect.facebook.net",
+      "connect-src 'self' https://www.facebook.com https://connect.facebook.net https://graph.facebook.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
